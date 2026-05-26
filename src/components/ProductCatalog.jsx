@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Plus, Trash2, Edit2, Check } from 'lucide-react';
+import { X, Plus, Trash2, Edit2, Check, Image as ImageIcon } from 'lucide-react';
 
 export default function ProductCatalog({ products, onAddProduct, onUpdateProduct, onDeleteProduct, onClose }) {
   const [name, setName] = useState('');
@@ -7,6 +7,10 @@ export default function ProductCatalog({ products, onAddProduct, onUpdateProduct
   const [code, setCode] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editPrice, setEditPrice] = useState('');
+  
+  // Estados para o Balão de Imagem
+  const [balloonProductId, setBalloonProductId] = useState(null);
+  const [tempImageUrl, setTempImageUrl] = useState('');
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -29,7 +33,8 @@ export default function ProductCatalog({ products, onAddProduct, onUpdateProduct
       id: Date.now().toString(),
       code: trimmedCode,
       name: trimmedName,
-      price: parseFloat(price)
+      price: parseFloat(price),
+      image: '' // Inicia sem imagem
     });
     
     setName('');
@@ -50,9 +55,30 @@ export default function ProductCatalog({ products, onAddProduct, onUpdateProduct
     setEditingId(null);
   };
 
+  // Toggle do Balão de Imagem
+  const toggleBalloon = (product) => {
+    if (balloonProductId === product.id) {
+      setBalloonProductId(null);
+      setTempImageUrl('');
+    } else {
+      setBalloonProductId(product.id);
+      setTempImageUrl(product.image || '');
+    }
+  };
+
+  // Salvar a Imagem do Balão
+  const handleSaveImage = (product) => {
+    onUpdateProduct({
+      ...product,
+      image: tempImageUrl.trim()
+    });
+    setBalloonProductId(null);
+    setTempImageUrl('');
+  };
+
   return (
     <div className="modal-overlay">
-      <div className="glass-panel modal-content" style={{ padding: '1.5rem' }}>
+      <div className="glass-panel modal-content" style={{ padding: '1.5rem', overflow: 'visible' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Catálogo de Produtos</h2>
           <button className="btn btn-ghost" onClick={onClose} style={{ padding: '0.25rem' }}>
@@ -105,13 +131,45 @@ export default function ProductCatalog({ products, onAddProduct, onUpdateProduct
                 alignItems: 'center',
                 padding: '0.75rem',
                 background: 'rgba(255,255,255,0.05)',
-                borderRadius: '8px'
+                borderRadius: '8px',
+                position: 'relative'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontFamily: 'monospace' }}>
-                    [{product.code}]
-                  </span>
-                  <span>{product.name}</span>
+                  {/* Círculo Interativo da Imagem (Abre Balão) */}
+                  <button
+                    onClick={() => toggleBalloon(product)}
+                    type="button"
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: product.image ? '1px solid var(--accent-color, #ffd700)' : '1px dashed rgba(255,255,255,0.2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      padding: 0,
+                      transition: 'all 0.2s'
+                    }}
+                    title="Clique para adicionar/alterar imagem via Link"
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    {product.image ? (
+                      <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <ImageIcon size={16} style={{ color: 'var(--text-muted)' }} />
+                    )}
+                  </button>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                      [{product.code}]
+                    </span>
+                    <span style={{ fontSize: '0.925rem', fontWeight: 500 }}>{product.name}</span>
+                  </div>
                 </div>
                 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -156,6 +214,91 @@ export default function ProductCatalog({ products, onAddProduct, onUpdateProduct
                     <Trash2 size={16} />
                   </button>
                 </div>
+
+                {/* Balão de Imagem (Popover) */}
+                {balloonProductId === product.id && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '12px',
+                    zIndex: 100,
+                    background: '#1a1a26',
+                    border: '1px solid rgba(255, 215, 0, 0.3)',
+                    borderRadius: '12px',
+                    padding: '0.85rem',
+                    boxShadow: '0 12px 36px rgba(0, 0, 0, 0.7)',
+                    width: '290px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.6rem',
+                    marginTop: '8px'
+                  }}>
+                    {/* Seta do Balão */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '100%',
+                      left: '18px',
+                      width: '0',
+                      height: '0',
+                      borderLeft: '8px solid transparent',
+                      borderRight: '8px solid transparent',
+                      borderBottom: '8px solid rgba(255, 215, 0, 0.3)',
+                    }}></div>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-color, #ffd700)' }}>📷 Link da Imagem do Produto</span>
+                      <button 
+                        onClick={() => setBalloonProductId(null)}
+                        type="button"
+                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.1rem' }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.35rem' }}>
+                      <input 
+                        type="text" 
+                        placeholder="Cole o link (URL) da imagem..." 
+                        className="input" 
+                        value={tempImageUrl}
+                        onChange={(e) => setTempImageUrl(e.target.value)}
+                        style={{ flex: 1, fontSize: '0.75rem', padding: '0.35rem' }}
+                        autoFocus
+                      />
+                      <button 
+                        onClick={() => handleSaveImage(product)}
+                        type="button"
+                        className="btn btn-success"
+                        style={{ padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}
+                      >
+                        OK
+                      </button>
+                    </div>
+
+                    {tempImageUrl.trim() && (
+                      <div style={{ 
+                        width: '100%', 
+                        height: '110px', 
+                        borderRadius: '6px', 
+                        overflow: 'hidden', 
+                        background: 'rgba(0,0,0,0.3)', 
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <img 
+                          src={tempImageUrl} 
+                          alt="Previsualização" 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=200'; }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
               </div>
             ))
           )}

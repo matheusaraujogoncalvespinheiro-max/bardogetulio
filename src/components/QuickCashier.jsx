@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Search, Plus, Minus, Trash2, Check, ShoppingBag, CreditCard, DollarSign } from 'lucide-react';
+import { X, Search, Plus, Minus, Trash2, Check, ShoppingBag, CreditCard, DollarSign, Image as ImageIcon } from 'lucide-react';
 
 export default function QuickCashier({ products, onClose, onCompleteSale }) {
   const [cart, setCart] = useState([]);
@@ -138,26 +138,48 @@ export default function QuickCashier({ products, onClose, onCompleteSale }) {
                   onClick={() => handleAddToCart(product)}
                   className="glass-panel"
                   style={{
-                    padding: '1rem',
+                    padding: '0.75rem',
                     border: '1px solid rgba(255,255,255,0.05)',
                     background: 'rgba(255,255,255,0.02)',
                     borderRadius: '12px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '0.5rem',
+                    justifyContent: 'center',
+                    gap: '0.4rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     textAlign: 'center',
-                    minHeight: '110px'
+                    minHeight: '140px'
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                 >
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>#{product.code}</span>
-                  <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-color)' }}>{product.name}</span>
-                  <span style={{ fontSize: '1rem', fontWeight: 700, color: '#4ade80' }}>
+                  {/* Thumbnail de imagem no Caixa Rápido */}
+                  {product.image ? (
+                    <div style={{ width: '56px', height: '56px', borderRadius: '8px', overflow: 'hidden', marginBottom: '0.25rem', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      width: '56px', 
+                      height: '56px', 
+                      borderRadius: '8px', 
+                      overflow: 'hidden', 
+                      marginBottom: '0.25rem', 
+                      border: '1px dashed rgba(255,255,255,0.15)', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      background: 'rgba(255,255,255,0.02)' 
+                    }}>
+                      <ImageIcon size={20} style={{ color: 'var(--text-muted)' }} />
+                    </div>
+                  )}
+
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>#{product.code}</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-color)', lineHeight: '1.2' }}>{product.name}</span>
+                  <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#4ade80' }}>
                     R$ {Number(product.price).toFixed(2)}
                   </span>
                 </button>
