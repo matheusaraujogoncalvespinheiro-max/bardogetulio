@@ -7,6 +7,7 @@ import OrderHistory from './components/OrderHistory.jsx';
 import Login from './components/Login.jsx';
 import MonthlyReport from './components/MonthlyReport.jsx';
 import DbConfigModal from './components/DbConfigModal.jsx';
+import QuickCashier from './components/QuickCashier.jsx';
 
 import { db, isConfigured } from './firebase.js';
 import { 
@@ -64,6 +65,7 @@ function App() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [selectedTableId, setSelectedTableId] = useState(null);
   const [isDbConfigOpen, setIsDbConfigOpen] = useState(false);
+  const [isQuickCashierOpen, setIsQuickCashierOpen] = useState(false);
 
   // 1. Sincronização e Migração Automática com Firebase
   useEffect(() => {
@@ -397,6 +399,35 @@ function App() {
     }
   };
 
+  const handleCompleteQuickSale = async (tableId, total, items, paymentMethod) => {
+    const historyEntry = {
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+      tableId: String(tableId),
+      items: [...items],
+      total: Number(total),
+      timestamp: new Date().toISOString(),
+      paymentMethod: String(paymentMethod)
+    };
+
+    if (isConfigured) {
+      try {
+        await setDoc(doc(db, 'history', historyEntry.id), {
+          tableId: historyEntry.tableId,
+          items: historyEntry.items,
+          total: historyEntry.total,
+          timestamp: historyEntry.timestamp,
+          paymentMethod: historyEntry.paymentMethod
+        });
+      } catch (e) {
+        console.error("Erro ao salvar venda direta no Firebase:", e);
+        throw e;
+      }
+    } else {
+      setHistory(prev => [historyEntry, ...prev]);
+    }
+    return historyEntry;
+  };
+
   if (!isAuthenticated) {
     return <Login onLogin={handleLogin} />;
   }
@@ -410,6 +441,7 @@ function App() {
         onLogout={handleLogout}
         isConfigured={isConfigured}
         onOpenDbConfig={() => setIsDbConfigOpen(true)}
+        onOpenQuickCashier={() => setIsQuickCashierOpen(true)}
       />
       
       <main>
@@ -458,6 +490,14 @@ function App() {
 
       {isDbConfigOpen && (
         <DbConfigModal onClose={() => setIsDbConfigOpen(false)} />
+      )}
+
+      {isQuickCashierOpen && (
+        <QuickCashier 
+          products={products}
+          onClose={() => setIsQuickCashierOpen(false)}
+          onCompleteSale={handleCompleteQuickSale}
+        />
       )}
     </div>
   );

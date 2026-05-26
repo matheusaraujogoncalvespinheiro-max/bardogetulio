@@ -1,7 +1,7 @@
-import { Settings, History, LogOut, BarChart3 } from 'lucide-react';
+import { Settings, History, LogOut, BarChart3, ShoppingBag } from 'lucide-react';
 import wolfLogo from '../assets/wolf_logo.png';
 
-export default function Header({ onOpenCatalog, onOpenHistory, onOpenReport, onLogout, isConfigured, onOpenDbConfig }) {
+export default function Header({ onOpenCatalog, onOpenHistory, onOpenReport, onLogout, isConfigured, onOpenDbConfig, onOpenQuickCashier }) {
   return (
     <header className="glass-panel" style={{ 
       margin: '1rem', 
@@ -78,6 +78,10 @@ export default function Header({ onOpenCatalog, onOpenHistory, onOpenReport, onL
       </div>
       
       <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+        <button className="btn btn-ghost" onClick={onOpenQuickCashier} style={{ color: 'var(--accent-color, #ffd700)', border: '1px solid rgba(255,215,0,0.15)' }}>
+          <ShoppingBag size={20} />
+          <span>Caixa Rápido</span>
+        </button>
         <button className="btn btn-ghost" onClick={onOpenReport}>
           <BarChart3 size={20} />
           <span>Relatório</span>
