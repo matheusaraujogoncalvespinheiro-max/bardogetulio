@@ -64,8 +64,17 @@ export default function TableDetails({
 
   const handlePrint = () => {
     const data = closedData || { tableId, items, total, timestamp: new Date().toISOString() };
-    const printWindow = window.open('', '_blank');
     const dateStr = new Date(data.timestamp).toLocaleString('pt-BR');
+    
+    // 1. Cria um iframe temporário e oculto na página
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
     
     const html = `
       <html>
@@ -100,14 +109,21 @@ export default function TableDetails({
       </html>
     `;
     
-    printWindow.document.write(html);
-    printWindow.document.close();
+    // Grava o HTML da nota dentro do iframe oculto
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
     
-    // Aguarda a renderização completa do HTML na janela antes de disparar o print
+    // Aguarda a renderização do conteúdo no iframe e dispara a impressão nativa do navegador
     setTimeout(() => {
-      printWindow.focus();
-      printWindow.print();
-      printWindow.close();
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      
+      // Remove o iframe do site após a impressão para limpar a memória
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
     }, 250);
   };
 
