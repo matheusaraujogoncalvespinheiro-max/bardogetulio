@@ -169,13 +169,22 @@ export default function TableDetails({
 
   return (
     <div className="modal-overlay">
-      <div className="glass-panel modal-content" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '80vh' }}>
+      <div className="glass-panel modal-content" style={{ 
+        padding: '2rem', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '80vh',
+        width: '95%',
+        maxWidth: '700px',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.8)',
+        border: '1px solid rgba(255,255,255,0.08)'
+      }}>
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Mesa {tableId}</h2>
-          <button className="btn btn-ghost" onClick={onClose} style={{ padding: '0.25rem' }}>
-            <X size={20} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Mesa {tableId}</h2>
+          <button className="btn btn-ghost" onClick={onClose} style={{ padding: '0.35rem' }}>
+            <X size={24} />
           </button>
         </div>
 
@@ -275,50 +284,53 @@ export default function TableDetails({
               Mesa vazia. Adicione produtos acima.
             </p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {items.map((item, index) => (
                 <div key={index} style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
-                  padding: '0.75rem',
+                  padding: '1.25rem 1rem',
                   background: 'rgba(255,255,255,0.05)',
-                  borderRadius: '8px'
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.03)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     {/* Imagem do Produto consumido */}
                     {item.image ? (
-                      <div style={{ width: '38px', height: '38px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ width: '56px', height: '56px', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
                         <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                     ) : (
-                      <div style={{ width: '38px', height: '38px', borderRadius: '8px', overflow: 'hidden', border: '1px dashed rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)' }}>
-                        <ImageIcon size={14} style={{ color: 'var(--text-muted)' }} />
+                      <div style={{ width: '56px', height: '56px', borderRadius: '10px', overflow: 'hidden', border: '1px dashed rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                        <ImageIcon size={20} style={{ color: 'var(--text-muted)' }} />
                       </div>
                     )}
 
                     <div>
-                      <div style={{ fontWeight: 500 }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginRight: '0.5rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontFamily: 'monospace' }}>
                           [{item.code}]
                         </span>
-                        {item.quantity}x {item.name}
+                        <span style={{ color: 'var(--accent-color, #ffd700)' }}>{item.quantity}x</span>
+                        <span>{item.name}</span>
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        R$ {item.price.toFixed(2)} un
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        Preço unitário: R$ {item.price.toFixed(2)}
                       </div>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ fontWeight: 600 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-color)' }}>
                       R$ {(item.price * item.quantity).toFixed(2)}
                     </span>
                     <button 
                       className="btn btn-ghost" 
                       onClick={() => onRemoveItem(tableId, index)}
-                      style={{ padding: '0.25rem', color: 'var(--danger)' }}
+                      style={{ padding: '0.4rem', color: 'var(--danger)' }}
+                      title="Remover item da mesa"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={20} />
                     </button>
                   </div>
                 </div>
@@ -330,36 +342,36 @@ export default function TableDetails({
         {/* Footer / Total */}
         <div style={{ 
           marginTop: 'auto', 
-          paddingTop: '1rem', 
-          borderTop: '1px solid var(--border-color)',
+          paddingTop: '1.25rem', 
+          borderTop: '1px solid rgba(255,255,255,0.08)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
           <div>
-            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Total da Conta</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--success)' }}>
+            <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Total da Conta</div>
+            <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--success)' }}>
               R$ {total.toFixed(2)}
             </div>
           </div>
           
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
             <button 
               className="btn btn-ghost" 
               onClick={handlePrint}
               disabled={items.length === 0}
-              style={{ padding: '0.75rem' }}
+              style={{ padding: '1rem' }}
               title="Visualizar Impressão"
             >
-              <Printer size={20} />
+              <Printer size={22} />
             </button>
             <button 
               className="btn btn-success" 
               onClick={() => setIsConfirming(true)}
               disabled={items.length === 0}
-              style={{ opacity: items.length === 0 ? 0.5 : 1, padding: '0.75rem 1.5rem' }}
+              style={{ opacity: items.length === 0 ? 0.5 : 1, padding: '1rem 2rem', fontSize: '1.1rem', fontWeight: 600 }}
             >
-              <CheckCircle size={20} />
+              <CheckCircle size={22} />
               <span>Fechar Conta</span>
             </button>
           </div>
