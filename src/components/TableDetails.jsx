@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, CheckCircle, Trash2, Plus, Printer, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { X, CheckCircle, Trash2, Plus, Printer, AlertTriangle, ArrowLeft, Image as ImageIcon } from 'lucide-react';
 
 export default function TableDetails({ 
   tableId, 
@@ -231,8 +231,11 @@ export default function TableDetails({
                   <>
                     <div style={{ flex: '2 1 200px' }}>
                       <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px', display: 'block' }}>Produto</label>
-                      <div className="input" style={{ background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', fontWeight: 500 }}>
-                        {selectedProduct.name}
+                      <div className="input" style={{ background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 500 }}>
+                        {selectedProduct.image && (
+                          <img src={selectedProduct.image} alt={selectedProduct.name} style={{ width: '24px', height: '24px', borderRadius: '4px', objectFit: 'cover' }} />
+                        )}
+                        <span>{selectedProduct.name}</span>
                       </div>
                     </div>
                     <div style={{ width: '80px' }}>
@@ -282,15 +285,28 @@ export default function TableDetails({
                   background: 'rgba(255,255,255,0.05)',
                   borderRadius: '8px'
                 }}>
-                  <div>
-                    <div style={{ fontWeight: 500 }}>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginRight: '0.5rem' }}>
-                        [{item.code}]
-                      </span>
-                      {item.quantity}x {item.name}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      R$ {item.price.toFixed(2)} un
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    {/* Imagem do Produto consumido */}
+                    {item.image ? (
+                      <div style={{ width: '38px', height: '38px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    ) : (
+                      <div style={{ width: '38px', height: '38px', borderRadius: '8px', overflow: 'hidden', border: '1px dashed rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                        <ImageIcon size={14} style={{ color: 'var(--text-muted)' }} />
+                      </div>
+                    )}
+
+                    <div>
+                      <div style={{ fontWeight: 500 }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginRight: '0.5rem' }}>
+                          [{item.code}]
+                        </span>
+                        {item.quantity}x {item.name}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        R$ {item.price.toFixed(2)} un
+                      </div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
