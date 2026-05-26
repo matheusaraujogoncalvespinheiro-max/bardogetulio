@@ -84,7 +84,8 @@ function App() {
             batch.set(doc(db, 'products', String(p.id)), {
               code: p.code,
               name: p.name,
-              price: Number(p.price)
+              price: Number(p.price),
+              image: p.image || ''
             });
           });
           await batch.commit();
@@ -221,7 +222,8 @@ function App() {
         await setDoc(doc(db, 'products', String(product.id)), {
           code: product.code,
           name: product.name,
-          price: Number(product.price)
+          price: Number(product.price),
+          image: product.image || ''
         });
       } catch (e) { console.error("Erro ao adicionar produto:", e); }
     } else {
@@ -235,7 +237,8 @@ function App() {
         await setDoc(doc(db, 'products', String(updatedProduct.id)), {
           code: updatedProduct.code,
           name: updatedProduct.name,
-          price: Number(updatedProduct.price)
+          price: Number(updatedProduct.price),
+          image: updatedProduct.image || ''
         });
       } catch (e) { console.error("Erro ao atualizar produto:", e); }
     } else {
