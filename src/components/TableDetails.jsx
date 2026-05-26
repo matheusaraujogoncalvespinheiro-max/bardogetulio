@@ -54,11 +54,16 @@ export default function TableDetails({
     }
   };
 
-  const handleConfirmClose = () => {
-    const result = onCloseBill(tableId, total);
-    if (result) {
-      setClosedData(result);
-      setIsClosed(true);
+  const handleConfirmClose = async () => {
+    try {
+      const result = await onCloseBill(tableId, total);
+      if (result) {
+        setClosedData(result);
+        setIsClosed(true);
+      }
+    } catch (e) {
+      console.error("Erro ao fechar conta:", e);
+      alert("Erro ao fechar a conta no Firebase.");
     }
   };
 
@@ -81,13 +86,22 @@ export default function TableDetails({
         <head>
           <title>Mesa ${data.tableId} - Bar do Getúlio</title>
           <style>
-            body { font-family: 'Courier New', Courier, monospace; width: 300px; margin: 0 auto; padding: 20px; color: #000; }
-            h1 { text-align: center; font-size: 1.2rem; margin: 0; }
-            p { text-align: center; font-size: 0.8rem; margin: 5px 0; }
-            .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
-            .item { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 3px; }
-            .total { font-weight: bold; font-size: 1.1rem; text-align: right; margin-top: 10px; }
-            .footer { text-align: center; font-size: 0.7rem; margin-top: 20px; }
+            body { 
+              font-family: 'Courier New', Courier, monospace; 
+              width: 260px; 
+              margin: 0; 
+              padding: 5px; 
+              color: #000; 
+              background: #fff;
+            }
+            h1 { text-align: center; font-size: 14px; margin: 0 0 5px 0; font-weight: bold; }
+            p { text-align: center; font-size: 11px; margin: 3px 0; }
+            .divider { border-bottom: 1px dashed #000; margin: 8px 0; }
+            .item { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+            .item-name { width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .item-price { width: 35%; text-align: right; }
+            .total { font-weight: bold; font-size: 13px; text-align: right; margin-top: 8px; }
+            .footer { text-align: center; font-size: 10px; margin-top: 15px; }
           </style>
         </head>
         <body>
@@ -98,8 +112,8 @@ export default function TableDetails({
           <div class="divider"></div>
           ${data.items.map(item => `
             <div class="item">
-              <span>${item.quantity}x ${item.name}</span>
-              <span>R$ ${(item.price * item.quantity).toFixed(2)}</span>
+              <span class="item-name">${item.quantity}x ${item.name}</span>
+              <span class="item-price">R$ ${(item.price * item.quantity).toFixed(2)}</span>
             </div>
           `).join('')}
           <div class="divider"></div>
