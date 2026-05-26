@@ -1,8 +1,8 @@
 import { Users } from 'lucide-react';
 
 export default function TableGrid({ tables, onTableClick }) {
-  // Array de 1 a 90 para renderizar as mesas
-  const tableNumbers = Array.from({ length: 90 }, (_, i) => i + 1);
+  // Array de 1 a 50 para renderizar as mesas
+  const tableNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
 
   const getTableStatus = (tableId) => {
     const table = tables[tableId];
@@ -19,9 +19,9 @@ export default function TableGrid({ tables, onTableClick }) {
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-      gap: '1rem',
-      padding: '1rem'
+      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+      gap: '1.25rem',
+      padding: '1.25rem'
     }}>
       {tableNumbers.map(number => {
         const status = getTableStatus(number);
@@ -33,27 +33,28 @@ export default function TableGrid({ tables, onTableClick }) {
             className={`glass-panel table-card ${status === 'free' ? 'table-free' : 'table-occupied'}`}
             onClick={() => onTableClick(number)}
             style={{
-              padding: '1rem',
+              padding: '1.5rem 1.25rem',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem',
-              minHeight: '100px'
+              gap: '0.75rem',
+              minHeight: '130px',
+              cursor: 'pointer'
             }}
           >
-            <span style={{ fontSize: '1.5rem', fontWeight: 700 }}>{number}</span>
+            <span style={{ fontSize: '1.75rem', fontWeight: 700 }}>Mesa {number}</span>
             {status === 'occupied' ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Users size={12} /> Ocupada
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Users size={14} /> Ocupada
                 </span>
-                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--success)' }}>
+                <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--success)' }}>
                   R$ {total.toFixed(2)}
                 </span>
               </div>
             ) : (
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Livre</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Livre</span>
             )}
           </div>
         );
