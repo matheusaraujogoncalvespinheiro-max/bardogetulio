@@ -81,7 +81,7 @@ export default function TableDetails({
             .footer { text-align: center; font-size: 0.7rem; margin-top: 20px; }
           </style>
         </head>
-        <body onload="window.print(); window.close();">
+        <body>
           <h1>BAR DO GETÚLIO</h1>
           <p>Comprovante de Consumo</p>
           <div class="divider"></div>
@@ -102,6 +102,13 @@ export default function TableDetails({
     
     printWindow.document.write(html);
     printWindow.document.close();
+    
+    // Aguarda a renderização completa do HTML na janela antes de disparar o print
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }, 250);
   };
 
   const selectedProduct = products.find(p => p.id === selectedProductId);
